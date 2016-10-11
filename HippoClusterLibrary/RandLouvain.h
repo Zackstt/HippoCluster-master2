@@ -29,7 +29,7 @@ namespace HippoClusterLibrary
 		HIPPOCLUSTERLIBRARY_API RandLouvain(AdjacencyList* adjList);
 
 		// constructs a new cluster *** I need to make sure the new cluster contains both a vector of subClusters and all the nodes in the cluster
-		//HIPPOCLUSTERLIBRARY_API void cluster(); // *** may implement variables that can control cluster TEST
+		//HIPPOCLUSTERLIBRARY_API void cluster(); // *** may implement variables that can control cluster TEST2
 
 		// getModularity returns a number between -1 and 1 indicating the quality of a clustered graph
 		HIPPOCLUSTERLIBRARY_API double getModularity(int nodeI, clusterOfNodes cluster);
