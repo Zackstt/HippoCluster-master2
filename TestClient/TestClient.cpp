@@ -61,6 +61,12 @@ int main()
 	}
 	cout << "A: " << mcl.getCluster("C");
 
+
+	// randLouvain
+
+	// take adjacency List and build clustered graph
+
+
 	//ChineseWhispers cw(&al);
 	////HippoCluster cw(&al);
 	////cw.setNumNodes(al.numVertices());
