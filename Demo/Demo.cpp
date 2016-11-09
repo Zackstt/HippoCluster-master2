@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "../HippoClusterLibrary/AdjacencyList.h"
 #include "../HippoClusterLibrary/HippoCluster.h"
+#include "../HippoClusterLibrary/RandLouvain.h"
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -47,6 +48,14 @@ int main()
 	{
 		cout << mainSCC.getVertexName(i) << "\t" << i << endl;
 	}
+
+	// RandLouvain stuff
+
+	cout << "*******randLouvain output: " << endl;
+	RandLouvain rl(&adjacencyList);
+
+	AdjacencyList* ranLouv = new AdjacencyList;
+	rl.clusterAlgorithm(ranLouv);
 
 	// run a clustering algorithm on the full graph
 	cout << "running the new clustering algorith for 1000 iterations" << endl;
