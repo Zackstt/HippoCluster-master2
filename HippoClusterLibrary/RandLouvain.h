@@ -64,7 +64,7 @@ namespace HippoClusterLibrary
 		HIPPOCLUSTERLIBRARY_API AdjacencyList* aggrigateGraph(/*multimap<int, int> cluster, AdjacencyList* adjList*/);
 
 		// getModularity returns a number between -1 and 1 indicating the quality of a clustered graph
-		HIPPOCLUSTERLIBRARY_API double getModularity(int nodeI, std::vector<int> cluster);
+		HIPPOCLUSTERLIBRARY_API double getModularity(int nodeI, int comunity, std::vector<int> cluster);
 
 		// This function is the primary graph clustering code. It 
 		// Parameters: numberConsideredNeibours; % of node neighbors considered

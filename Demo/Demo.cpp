@@ -52,12 +52,30 @@ int main()
 	// RandLouvain stuff
 
 	cout << "*******randLouvain output: " << endl;
-	RandLouvain rl(&adjacencyList);
+	RandLouvain rl(&adjacencyList); 
+
+	vector<int> clusterlist;
+	clusterlist.resize(10);
+	clusterlist[0]=0;
+	clusterlist[1]=0;
+	clusterlist[2]=0;
+	clusterlist[3]=1;
+	clusterlist[4]=1;
+	clusterlist[5]=1;
+	clusterlist[6]=2;
+	clusterlist[7]=2;
+	clusterlist[8]=2;
+	clusterlist[9]=2;
 
 	AdjacencyList* ranLouv = new AdjacencyList;
+
 	rl.clusterAlgorithm(ranLouv);
+	cout << "get modularity returns: " << rl.getModularity(3, 0, clusterlist) << endl;
 
 	// run a clustering algorithm on the full graph
+	
+
+	cout << "*******end of randLouvain" << endl << endl;
 	cout << "running the new clustering algorith for 1000 iterations" << endl;
 	HippoCluster hc(&adjacencyList);
 	hc.setNumNodes(10);
