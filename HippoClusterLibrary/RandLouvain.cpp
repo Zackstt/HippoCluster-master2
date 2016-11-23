@@ -11,11 +11,12 @@ using namespace std;
 namespace HippoClusterLibrary
 {
 
-	RandLouvain::RandLouvain(AdjacencyList* AdjList)
+	RandLouvain::RandLouvain(AdjacencyList* AdjList, double k_constant)
 	{
 		adjList = AdjList;
 		preClustgerGraph = new AdjacencyList;
 		postClusterGraph = new AdjacencyList;
+		K_constant = k_constant;
 		//for (int i = 0; i < adjList->numVertices(); i++)
 		//{
 			// vector ID represents node ID and the number stored in the vector represents the cluster id
@@ -27,6 +28,40 @@ namespace HippoClusterLibrary
 		// need to also create the initial cluster here
 	}
 
+	AdjacencyList RandLouvain::aggregateGraph(AdjacencyList* graph, vector<int> clusters)
+	{
+		AdjacencyList constructedGraph = new AdjacencyList;
+		int edgesNew;
+
+		// counts clusters. builds 2 dimension vector from number of clusters
+		vector<bool> verticies;
+		verticies.resize(false, clusters.size());
+		for (int i = 0; i < clusters.size(); i++)
+		{
+			verticies[clusters[i]] = true;
+		}
+
+		int numVert = 0;
+		for (int i = 0; i < verticies.size(); i++)
+		{
+			if (verticies[i] == true)
+				numVert++;
+		}
+		// ***addEdge*** function will add weight if there is already a conection
+		// find weights within node and between them
+		// - go to each neighbor of node i. neighbor will either be in cluster or out of cluster.
+		for (int i = 0; i < graph->numVertices(); i++)
+		{
+			vector<std::tuple<int, double, double>> neighborsOfI = graph->allNeighbors(i);
+			for (int j = 0; j < neighborsOfI.size(); j++)
+			{
+				constructedGraph.addEdge(graph->getVertexName(clusters[i]), graph->getVertexName(get<0>(neighborsOfI[j])), get<1>(neighborsOfI[j]), false);
+			}
+		}
+
+		return constructedGraph;
+		// assign graph to the new graph
+	}
 
 	// cluster is a vector of nodes
 	double RandLouvain::getModularity(int nodeI, int comunity, vector<int> cluster)
@@ -106,8 +141,15 @@ namespace HippoClusterLibrary
 		// new AdjacencyList* preClusterGraph; // preform clustering algorithm on this graph, place it into post
 		//new AdjacencyList* postClusterGraph; // check and see if this graph is equal to prior graph
 
-		AdjacencyList* preClusterGraph = new AdjacencyList;  
+		AdjacencyList* preClusterGraph(clusterGraph);  
 		AdjacencyList* postClusterGraph = new AdjacencyList;
+
+		// test the graph
+		//cout << "The graph coppied is : ";
+		//for (int i = 0; i < preClusterGraph->numVertices(); i++)
+		//{
+		//	cout << i << " " << preClusterGraph->getVertexName(i) << endl;
+		//}
 
 		// step 1 build initial clusters
 		for (int i = 0; i < adjList->numVertices(); i++)
@@ -116,56 +158,59 @@ namespace HippoClusterLibrary
 			cout << i << " " << adjList->getVertexName(i) << endl;
 		}
 
-		//while (graphIsNotTheSame)
-		//{
-		//	// step 2 move nodes between clusters until max modularity is reached
-		//	// --- remove node i from its comunity
-		//	// --- get random set of neighbors of node i
-		//	// --- run getModularity on the list.
-		//	// --- if max mod > 0, add to that community, if not return node to its own community
-		//	for (int i = 0; i < adjList->numVertices(); i++)
-		//	{
-		//		clusters[i] = -1;
-		//		// get random set of neighbors here
-		//		// run getModularity on each element of list here, save highest modularity calculation and cluster
-		//		// if mod > 0 add else dont add
-		//	}
-		//}
+		while (true)
+		{
+			// ******* phase 1 *******
+			//	// step 2 move nodes between clusters until max modularity is reached
+			for (int i = 0; i < preClusterGraph->numVertices(); i++)
+			{
+				int nodeICluster = cluster[i];
+				// --- remove node i from its comunity
+				cluster[i] = -1;
+				// --- get random set of neighbors of node i use shuffle
+				// can try randomly mixing a list then only taking the first x% of it
+				//		*********will have to change this so it produces random set of neighbors*********
+				vector<std::tuple<int, double, double>> iNeighbors = preClusterGraph->allNeighbors(i);
+				random_shuffle(iNeighbors.begin(), iNeighbors.end());
+				int resizeValue = int(iNeighbors.size() * K_constant);
+				iNeighbors.resize(resizeValue);
+				// then reduce size of stuf
+				//	// --- run getModularity on the list.
+				int highestModNode, highestModCluster;
+				double modNodeValue;
+				modNodeValue = getModularity(i, get<0>(iNeighbors[0]), cluster);
+				highestModNode = 0;
+				for (int j = 1; j < iNeighbors.size(); i++)
+				{
+					if (getModularity(i, get<0>(iNeighbors[j]), cluster) > modNodeValue)
+					{
+						// might need to remember the group things added to
+						// need to know highest modularity
+						modNodeValue = getModularity(nodeICluster, get<0>(iNeighbors[j]), cluster);
+						// need to know what node is responsable for it
+						highestModNode = i;
+						// need to know what cluster the node is being added to
+						highestModCluster = get<0>(iNeighbors[j]);
+					}
+				}
+				// --- if max mod > 0, add to that community, if not return node to its own community
+				if (modNodeValue > 0)
+					clusters[i] = highestModCluster;
+				else
+					clusters[i] = nodeICluster;
+			}
+			// ******* phase 2 *******
+			// step 3 agrigate graph. loop back to beginning if graph is not same as preClusterGraph
+			// AdjacencyList aggrigateGraph(AdjacencyList* graph, vector<int> clusters)
+			//postClusterGraph = aggrigateGraph(preClusterGraph,clusters)
+		}
 
 
 
-		// step 3 agrigate graph. loop back to beginning if graph is not same as preClusterGraph
 
-		//while (true)
-		//{
-		//	
-		//}
-		// first int is the cluster key or the ID. second int is the node the cluster belongs to
-		// multimap<int, int> clusters;
-		// place each part of the graph into its own cluster
-		// for (int i=0; i < adjList.numVertices(); i++)
-		// {
-		// 	clusters.insert(std::pair<int, int>(i, i))
-		// }
+
 	}
 
-	//clusterofnodes randlouvain::clusteralgorithm()
-	//{
-	//	vector<clusterofnodes> subgraphs;
-	//	for (int i = 0; i < adjlist->numvertices; i++)
-	//	{
-	//		clusterofnodes a;
-	//		a.nodes = get<0>(adjlist[i]);
-	//		subgraphs.push_back(a);
-	//	}
-	//	int count = 0;
-	//	while (count != adjlist->numvertices)
-	//	{
-	//		clusterofnodes simplecluster;
-	//		simplecluster.nodes.push_back(); // push count k of graph into the simple cluster. 
-	//	}
-	//	count++;
-	//}
 	RandLouvain::~RandLouvain()
 	{
 		delete adjList;

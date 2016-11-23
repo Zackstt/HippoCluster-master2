@@ -18,6 +18,14 @@ namespace HippoClusterLibrary
 		srand(time(NULL));
 	}
 
+	// Copy constructor that builds a new AdjacencyList from a different one
+	AdjacencyList::AdjacencyList(AdjacencyList* copyList)
+	{
+		adjList = copyList->adjList;
+		vertexNames = copyList->vertexNames;
+		vertexNumbers = copyList->vertexNumbers;
+	}
+
 	// ____fromTSV____
 	// load graph information from a tab-separated values file.
 	// each row in the file defines one directed edge, and is formatted as follows:

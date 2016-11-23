@@ -53,6 +53,7 @@ namespace HippoClusterLibrary
 
 	public:
 		HIPPOCLUSTERLIBRARY_API AdjacencyList();
+		HIPPOCLUSTERLIBRARY_API AdjacencyList(AdjacencyList*);
 
 		HIPPOCLUSTERLIBRARY_API void fromTSV(std::string filename);
 		HIPPOCLUSTERLIBRARY_API void toTSV(std::string filename);

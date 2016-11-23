@@ -34,6 +34,7 @@ namespace HippoClusterLibrary
 		AdjacencyList* adjList;
 		AdjacencyList* preClustgerGraph;
 		AdjacencyList* postClusterGraph;
+		double K_constant;
 
 		// cluster contains <nodeID, clusterID> nodeID is the id of the node, clusterID is the cluster its assigned
 		// to
@@ -48,7 +49,7 @@ namespace HippoClusterLibrary
 	public:
 
 
-		HIPPOCLUSTERLIBRARY_API RandLouvain(AdjacencyList* adjList);
+		HIPPOCLUSTERLIBRARY_API RandLouvain(AdjacencyList* adjList, double k_constant);
 
 		// ***addEdge***
 
@@ -56,12 +57,12 @@ namespace HippoClusterLibrary
 		//HIPPOCLUSTERLIBRARY_API void cluster(); // *** may implement variables that can control cluster TEST2
 
 		// This function takes a adjacencylist and builds clusters out of the adjacencylist
-		HIPPOCLUSTERLIBRARY_API std::vector<int> buildClusters();
+		//HIPPOCLUSTERLIBRARY_API std::vector<int> buildClusters();
 
 		// Takes a cluster and the adjacency list the cluster is refering to, returns the aggrigated graph
 		// This function aggrigates a graph from a cluster of nodes to a node for each cluster 
 		// It also needs to assign proper weights from and to each node and also weights within each node
-		HIPPOCLUSTERLIBRARY_API AdjacencyList* aggrigateGraph(/*multimap<int, int> cluster, AdjacencyList* adjList*/);
+		HIPPOCLUSTERLIBRARY_API AdjacencyList aggregateGraph(AdjacencyList* graph, std::vector<int> clusters);
 
 		// getModularity returns a number between -1 and 1 indicating the quality of a clustered graph
 		HIPPOCLUSTERLIBRARY_API double getModularity(int nodeI, int comunity, std::vector<int> cluster);

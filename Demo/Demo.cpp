@@ -52,7 +52,7 @@ int main()
 	// RandLouvain stuff
 
 	cout << "*******randLouvain output: " << endl;
-	RandLouvain rl(&adjacencyList); 
+	RandLouvain rl(&adjacencyList, 0.75); 
 
 	vector<int> clusterlist;
 	clusterlist.resize(10);
