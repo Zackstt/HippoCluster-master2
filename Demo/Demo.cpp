@@ -54,7 +54,10 @@ int main()
 	cout << "*******randLouvain output: " << endl;
 	RandLouvain rl(&adjacencyList, 0.75); 
 
+	rl.clusterAlgorithm();
+
 	vector<int> clusterlist;
+	cout << "point 1" << endl;
 	clusterlist.resize(10);
 	clusterlist[0]=0;
 	clusterlist[1]=0;
@@ -68,35 +71,59 @@ int main()
 	clusterlist[9]=2;
 
 	AdjacencyList* ranLouv = new AdjacencyList;
+	
+	//rl.clusterAlgorithm();
 
-	rl.clusterAlgorithm(ranLouv);
-	cout << "get modularity returns: " << rl.getModularity(3, 0, clusterlist) << endl;
+	
 
+	rl.aggregateGraph(&adjacencyList, clusterlist);
+
+	cout << "adjacencyList size :" << adjacencyList.numVertices() << endl;
+	
+	for (int i = 0; i < adjacencyList.numVertices(); i++)
+	{
+		cout << adjacencyList.getVertexName(i) << "     " << i << endl;
+	}
+
+	//rl.aggregateGraph(&adjacencyList, clusterlist);
+
+	cout << "ranLouv elements :" << endl;
+
+	
+
+	cout << "point 2" << endl;
+
+	//rl.clusterAlgorithm(&adjacencyList);
+	cout << "point 3" << endl;
+	// double getModularity(int nodeI, int comunity, std::vector<int> cluster)
+	cout << "get modularity returns: " << rl.getModularity(2, 0, clusterlist) << endl;
+
+	cout << "point 4" << endl;
 	// run a clustering algorithm on the full graph
 	
 
 	cout << "*******end of randLouvain" << endl << endl;
-	cout << "running the new clustering algorith for 1000 iterations" << endl;
-	HippoCluster hc(&adjacencyList);
-	hc.setNumNodes(10);
-	hc.setTrajectoryLength(adjacencyList.numVertices());
-	for (int i = 0; i < 1000; i++)
-	{
-		hc.step();
-		hc.dropUnusedNodes();
-	}
-	cout << "vertex name	cluster assignment" << endl;
-	vector<int> assignments;
-	hc.getAllClusterAssignments(assignments);
-	for (int i = 0; i < assignments.size(); i++)
-	{
-		cout << adjacencyList.getVertexName(i) << "\t" << assignments[i] << endl;
-	}
+	//cout << "running the new clustering algorith for 1000 iterations" << endl;
+	//HippoCluster hc(&adjacencyList);
+	//hc.setNumNodes(10);
+	//hc.setTrajectoryLength(adjacencyList.numVertices());
+	//for (int i = 0; i < 1000; i++)
+	//{
+	//	hc.step();
+	//	hc.dropUnusedNodes();
+	//}
+	//cout << "vertex name	cluster assignment" << endl;
+	//vector<int> assignments;
+	//hc.getAllClusterAssignments(assignments);
+	//for (int i = 0; i < assignments.size(); i++)
+	//{
+	//	cout << adjacencyList.getVertexName(i) << "\t" << assignments[i] << endl;
+	//}
 
-	// display some stats for the clustering
-	ClusterStats stats = adjacencyList.getClusterStats(assignments);
-	cout << "mean cluster size: " << stats.getClusterSizeMean() << " +/- " << stats.getClusterSizeSD() << endl;
-	cout << "weighted average relative density: " << stats.getWeightedAvgRelativeDensity() << endl;
+	//// display some stats for the clustering
+	//ClusterStats stats = adjacencyList.getClusterStats(assignments);
+	//cout << "mean cluster size: " << stats.getClusterSizeMean() << " +/- " << stats.getClusterSizeSD() << endl;
+	//cout << "weighted average relative density: " << stats.getWeightedAvgRelativeDensity() << endl;
 
 
 	getchar();
