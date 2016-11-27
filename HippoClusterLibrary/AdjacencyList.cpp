@@ -25,6 +25,76 @@ namespace HippoClusterLibrary
 		vertexNames = copyList->vertexNames;
 		vertexNumbers = copyList->vertexNumbers;
 	}
+	
+	// ____fromGRAPH____
+	// load graph information from a .graph file.
+	// The first value in the file is the number of verticies. The second value is the number of edges.
+	// The third value means something and the rest of the values are weights of 1 bidirectional verticies
+	void AdjacencyList::fromGRAPH(std::string filename)
+	{
+		adjList.clear();
+		vertexNames.clear();
+		vertexNumbers.clear();
+
+		std::ifstream inFile;
+		inFile.open(filename);
+
+		int edges, verticies;
+		std::string tmp1, tmp2;
+
+		// read in data from file
+		if (inFile.is_open())
+		{
+			inFile >> verticies;
+			inFile >> edges;
+			inFile >> tmp1;
+			for (int i = 0; i < edges; i++)
+			{
+				inFile >> tmp1;
+				inFile >> tmp2;
+				addEdge(tmp1, tmp2, 1, false);
+
+				//std::cout << tmp1 << ' ' << tmp2 << std::endl;
+			}
+		}
+		else
+			throw("error opening file");
+		//	std::string line;
+		//	while (getline(inFile, line))
+		//	{
+		//		// get the first two string values from the line
+		//		std::vector<std::string> neighbors;
+		//		int pos;
+		//		while ((pos = line.find('\t')) != std::string::npos)
+		//		{
+		//			neighbors.push_back(line.substr(0, pos));
+		//			line.erase(0, pos + 1);
+		//		}
+		//		// get the last numerical value
+		//		double frequency;
+
+		//		// if this text file doesn't include weights
+		//		if (neighbors.size() == 1)
+		//		{
+		//			neighbors.push_back(line);
+		//			frequency = 1;
+		//		}
+		//		else
+		//			frequency = stod(line);
+
+		//		addEdge(neighbors[0], neighbors[1], frequency, false);
+		//	}
+		//	inFile.close();
+		//}
+
+
+		//// calculate edge probabilities
+		//for (int i = 0; i < adjList.size(); i++)
+		//{
+		//	calculateNeighborProbabilities(i);
+		//}
+
+	}
 
 	// ____fromTSV____
 	// load graph information from a tab-separated values file.

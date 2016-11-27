@@ -15,12 +15,86 @@ int main()
 	// read in the test graph
 	AdjacencyList adjacencyList;
 	adjacencyList.fromTSV("testGraph.tsv");
+	cout << 1 << endl;
+	// read in the .graph
+	AdjacencyList adjacencyList1;
+	adjacencyList1.fromGRAPH("karate.graph");
+	RandLouvain karateTest(&adjacencyList1, 0.75);
+	karateTest.clusterAlgorithm();
+	cout << "karate cluster graph :" << endl;
+	cout << "vertex name	id" << endl;
+	for (int i = 0; i < adjacencyList1.numVertices(); i++)
+	{
+		cout << adjacencyList1.getVertexName(i) << "\t" << i << endl;
+	}
 
 	// another way to create the graph is to add edge info one-by-one
-	//AdjacencyList adjacencyList;
-	//adjacencyList.addEdge("A", "B", 1);
-	//adjacencyList.addEdge("B", "A", 1);
-	//adjacencyList.addEdge("D", "A", 0.1);
+	AdjacencyList adjacencyList2;
+	adjacencyList2.addEdge("A", "B", 1);
+	adjacencyList2.addEdge("B", "A", 1);
+	adjacencyList2.addEdge("B", "C", 1);
+	adjacencyList2.addEdge("C", "B", 1);
+	adjacencyList2.addEdge("C", "D", 1);
+	adjacencyList2.addEdge("D", "C", 1);
+	adjacencyList2.addEdge("D", "A", 1);
+	adjacencyList2.addEdge("A", "D", 1);
+	adjacencyList2.addEdge("C", "D", 1);
+	adjacencyList2.addEdge("D", "C", 1);
+	adjacencyList2.addEdge("A", "C", 1);
+	adjacencyList2.addEdge("C", "A", 1);
+
+	adjacencyList2.addEdge("1A", "1B", 1);
+	adjacencyList2.addEdge("1B", "1A", 1);
+	adjacencyList2.addEdge("1B", "1C", 1);
+	adjacencyList2.addEdge("1C", "1B", 1);
+	adjacencyList2.addEdge("1C", "1D", 1);
+	adjacencyList2.addEdge("1D", "1C", 1);
+	adjacencyList2.addEdge("1D", "1A", 1);
+	adjacencyList2.addEdge("1A", "1D", 1);
+	adjacencyList2.addEdge("1C", "1D", 1);
+	adjacencyList2.addEdge("1D", "1C", 1);
+	adjacencyList2.addEdge("1A", "1C", 1);
+	adjacencyList2.addEdge("1C", "1A", 1);
+
+	adjacencyList2.addEdge("2A", "2B", 1);
+	adjacencyList2.addEdge("2B", "2A", 1);
+	adjacencyList2.addEdge("2B", "2C", 1);
+	adjacencyList2.addEdge("2C", "2B", 1);
+	adjacencyList2.addEdge("2C", "2D", 1);
+	adjacencyList2.addEdge("2D", "2C", 1);
+	adjacencyList2.addEdge("2D", "2A", 1);
+	adjacencyList2.addEdge("2A", "2D", 1);
+	adjacencyList2.addEdge("2C", "2D", 1);
+	adjacencyList2.addEdge("2D", "2C", 1);
+	adjacencyList2.addEdge("2A", "2C", 1);
+	adjacencyList2.addEdge("2C", "2A", 1);
+
+	adjacencyList2.addEdge("A", "1C", 1);
+	adjacencyList2.addEdge("1C", "A", 1);
+	adjacencyList2.addEdge("1B", "2A", 1);
+	adjacencyList2.addEdge("2A", "1B", 1);
+	adjacencyList2.addEdge("2D", "D", 1);
+	adjacencyList2.addEdge("D", "2D", 1);
+
+	cout << "adjacencyList2 before cluster:" << endl;
+	cout << "vertex name	    id" << endl;
+	cout << "adjList2.numvert :" << adjacencyList2.numVertices() << endl;
+	for (int i = 0; i < adjacencyList2.numVertices(); i++)
+	{
+		cout << adjacencyList2.getVertexName(i) << "\t" << i << endl;
+	}
+
+	RandLouvain randL(&adjacencyList2, 0.75);
+	randL.clusterAlgorithm();
+
+	cout << "adjacencyList2:" << endl;
+	cout << "vertex name	    id" << endl;
+	for (int i = 0; i < adjacencyList2.numVertices(); i++)
+	{
+		cout << adjacencyList2.getVertexName(i) << "\t" << i << endl;
+	}
+
+	//adjacencyList1.addEdge("D", "A", 0.1);
 	//etc...
 
 	// list all vertex names and assigned id numbers
@@ -96,7 +170,7 @@ int main()
 	//rl.clusterAlgorithm(&adjacencyList);
 	cout << "point 3" << endl;
 	// double getModularity(int nodeI, int comunity, std::vector<int> cluster)
-	cout << "get modularity returns: " << rl.getModularity(2, 0, clusterlist) << endl;
+	//cout << "get modularity returns: " << rl.getModularity(2, 0, clusterlist) << endl;
 
 	cout << "point 4" << endl;
 	// run a clustering algorithm on the full graph

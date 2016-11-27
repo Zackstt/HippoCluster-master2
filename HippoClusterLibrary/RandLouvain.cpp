@@ -39,17 +39,23 @@ namespace HippoClusterLibrary
 	// change this so its a void function that just rearanges graph
 	void RandLouvain::aggregateGraph(AdjacencyList* graph, vector<int> clusters)
 	{
+		cout << "clusters list: " << endl;
+		for (int i = 0; i < clusters.size(); i++)
+		{
+			cout << clusters[i] << endl;
+		}
 		AdjacencyList constructedGraph = new AdjacencyList;
 		//int edgesNew;
-		// cout << "ag 1" << endl;
-		// counts clusters. builds 2 dimension vector from number of clusters
+		// counts clusters. 
 		vector<int> verticesCounted;
 		//cout << "clusters.size() " << clusters.size() << endl;
 		verticesCounted.resize(clusters.size(), 0);
 
 		for (int i = 0; i < clusters.size(); i++)
 		{
-			verticesCounted[clusters[i]] = 1;
+			//cout << "clusters[i] = " << clusters[i] << endl;
+			if(clusters[i]>=0)
+				verticesCounted[clusters[i]] = 1;//----------------
 		}
 		// goes from 0 to 9
 		//for (int i = 0; i < clusters.size(); i++)
@@ -58,7 +64,6 @@ namespace HippoClusterLibrary
 		//}
 
 		// also goes from 0 to 9
-		//cout << "ag 2" << endl;
 		//for (int i = 0; i < clusters.size(); i++)
 		//{
 		//	cout << "I :" << i << endl;
@@ -74,18 +79,34 @@ namespace HippoClusterLibrary
 		// ***addEdge*** function will add weight if there is already a conection
 		// find weights within node and between them
 		// - go to each neighbor of node i. neighbor will either be in cluster or out of cluster.
-		// cout << "ag 4" << endl;
 		for (int i = 0; i < graph->numVertices(); i++)
 		{
 			vector<std::tuple<int, double, double>> neighborsOfI = graph->allNeighbors(i);
+			//cout << "neighborsOfI.size() :" << neighborsOfI.size() << endl;
+			//for (int m = 0; m < neighborsOfI.size(); m++)
+			//{
+				//cout << get<0>(neighborsOfI[m]) << endl;
+				//cout << get<1>(neighborsOfI[m]) << endl;
+				//cout << "vertex name of node :" << graph->getVertexName(get<0>(neighborsOfI[m])) << endl;
+			//}
+			//cout << "neighborsOfI.size() = " << neighborsOfI.size() << endl;// = 4
 			for (int j = 0; j < neighborsOfI.size(); j++)
 			{
+				// take the weight from the clusters[node] to clusters[node] and add it to the new adjList
 				// have to add edge from clusters vector
-				// cout << "from : to :" << graph->getVertexName(clusters[i]) << " " << graph->getVertexName(clusters[get<0>(neighborsOfI[j])]) << endl;
-				constructedGraph.addEdge(graph->getVertexName(clusters[i]),graph->getVertexName(clusters[get<0>(neighborsOfI[j])]), get<1>(neighborsOfI[j]), false);
+				//cout << "clusters[get<0>(neighborsOfI[j])] :" << clusters[get<0>(neighborsOfI[j])] << endl;
+				//cout << "clusters[i] :" << clusters[i] << endl;
+				//
+				//
+				//if ((clusters[i] >= 0) && (clusters[get<0>(neighborsOfI[j])] >= 0))
+				//{
+					//cout << "from :" << graph->getVertexName(clusters[i]) << endl;
+					//cout << "to :" << graph->getVertexName(get<0>(neighborsOfI[j])) << endl;
+					constructedGraph.addEdge(graph->getVertexName(clusters[i]), graph->getVertexName(clusters[get<0>(neighborsOfI[j])]), get<1>(neighborsOfI[j]), false);
+				//}
+					
 			}
 		}
-		// cout << "ag 5" << endl;
 		cout << "constructedGraph: " << endl;
 		for (int i = 0; i < constructedGraph.numVertices(); i++)
 		{
@@ -99,9 +120,11 @@ namespace HippoClusterLibrary
 	// cluster is a vector of nodes
 
 	// getModularity returns a number between -1 and 1 indicating the quality of a clustered graph
+
+	// some values are 0 need to fix this
 	double RandLouvain::getModularity(int nodeI, int comunity, vector<int> cluster)
 	{
-		//cout << "gm 1" << endl;
+		//cout << "nodeI; comunity; cluster.size(); =" << nodeI << ' ' << comunity << ' ' << cluster.size() << endl;
 		// need a vector of nodes actually in the comunity
 		vector<int> nodesInComunity;
 		for (int i = 0; i < cluster.size(); i++)
@@ -112,7 +135,6 @@ namespace HippoClusterLibrary
 		sort(nodesInComunity.begin(), nodesInComunity.end());
 
 		double weightOfNetwork = adjList->sumWeights();
-		//cout << "gm 2" << endl;
 		// weightIntoCluster completed
 		double weightIntoCluster = 0, weightIntoNode = 0, weightiToCluster = 0;
 
@@ -121,13 +143,11 @@ namespace HippoClusterLibrary
 		//cout << "nodeI " << nodeI << endl; // nodeI went to 10. cant do that
 		vector<std::tuple<int, double, double>> neighborsOfI = adjList->allNeighbors(nodeI);// broken here
 		// --- get sumation of weights
-		//cout << "gm 3" << endl;
 		for (int i = 0; i < neighborsOfI.size(); i++)
 		{
 			if(binary_search(nodesInComunity.begin(), nodesInComunity.end(),comunity))
-				weightIntoCluster += get<1>(neighborsOfI[i]);
+				weightiToCluster += get<1>(neighborsOfI[i]);
 		}
-		//cout << "gm 4" << endl;
 		// sum of weights into ci
 		// is the sum of the weights of the edges into nodes in Cj
 		
@@ -141,7 +161,6 @@ namespace HippoClusterLibrary
 			neighborList.insert(neighborList.end(), tempHolder.begin(), tempHolder.end());
 			tempHolder.clear();
 		}
-		//cout << "gm 5" << endl;
 		// take neighborList, only add elements of it that are not in cluster
 		// go through and delete all nodes that are in the cluster
 		// go through neighbors list and add weights to weightIntoCluster
@@ -151,7 +170,6 @@ namespace HippoClusterLibrary
 				weightIntoCluster += get<1>(neighborList[i]);
 		}
 
-		//cout << "gm 6" << endl;
 
 		// sum of weights into i
 		vector<tuple<int, double, double>> iNeighbors = adjList->allNeighbors(nodeI);
@@ -159,9 +177,9 @@ namespace HippoClusterLibrary
 		{
 			weightIntoNode += get<1>(iNeighbors[i]);
 		}
-
-		//cout << "gm 7" << endl;
-
+		// weightiToCluster and weightIntoCluster = 0 at some points 
+		//cout << "weightiToCluster; weightOfNetwork; weightIntoCluster; weightIntoNode;" << weightiToCluster << ' '
+			//<< weightOfNetwork << ' ' << weightIntoCluster << ' ' << weightIntoNode << endl;
 		// final equation
 		return((weightiToCluster / (2 * weightOfNetwork)) -
 			((weightIntoCluster*weightIntoNode)/(2 * weightOfNetwork*weightOfNetwork)) );
@@ -183,15 +201,17 @@ namespace HippoClusterLibrary
 		//                  else its the same graph is complete
 		vector<int> clusters;
 		clusters.resize(adjList->numVertices(),-1);
+		//for (int i = 0; i < clusters.size(); i++)
+		//{
+		//	clusters[i] = i;
+		//}
 		// new AdjacencyList* preClusterGraph; // preform clustering algorithm on this graph, place it into post
 		//new AdjacencyList* postClusterGraph; // check and see if this graph is equal to prior graph
 
-		//cout << "ca 1" << endl;
 
 		AdjacencyList* preClusterGraph(adjList);  
 		AdjacencyList* postClusterGraph(preClusterGraph);
 
-		//cout << "ca 2" << endl;
 		// test the graph
 		//cout << "The graph coppied is : ";
 		//for (int i = 0; i < preClusterGraph->numVertices(); i++)
@@ -200,12 +220,11 @@ namespace HippoClusterLibrary
 		//}
 
 		// step 1 build initial clusters
-		for (int i = 0; i < adjList->numVertices(); i++)
+		for (int i = 0; i < clusters.size(); i++)
 		{
 			clusters[i] = i;
 			cout << i << " " << adjList->getVertexName(i) << endl;
 		}
-		//cout << "ca 3" << endl;
 		bool flag = true;
 		while (flag)
 		{
@@ -229,24 +248,26 @@ namespace HippoClusterLibrary
 				// then reduce size of stuf
 				//	// --- run getModularity on the list.
 				int highestModNode, highestModCluster;
-				double modNodeValue;
+				double modNodeValue = 0.0;
 				// double getModularity(int nodeI, int comunity, std::vector<int> cluster)
 				//cout << "nodeI, comunity, cluster" << i << ' ' << get<0>(iNeighbors[0]) << " not showing cluser"<< endl;
 
 				//cout << "numverticies :" << preClusterGraph->numVertices() << endl;
-				modNodeValue = getModularity(i, get<0>(iNeighbors[0]), cluster); // goes out of bounds
+				//modNodeValue = getModularity(i, get<0>(iNeighbors[0]), clusters); // goes out of bounds
+				//cout << "getMod called value :" << modNodeValue << endl;
 				highestModNode = 0;
-				//cout << "p1" << endl;
+				highestModCluster = -1;
 				//cout << "iNeighbors.size() :" << iNeighbors.size() << endl;
-				for (int j = 1; j < iNeighbors.size(); j++)
+				for (int j = 0; j < iNeighbors.size(); j++)
 				{
 					//cout << "nodeICluster :" << nodeICluster << endl;
 					//cout << "i: " << i << endl;
-					if (getModularity(i, get<0>(iNeighbors[j]), cluster) > modNodeValue)
+					if (getModularity(nodeICluster, get<0>(iNeighbors[j]), clusters) > modNodeValue)
 					{
 						// might need to remember the group things added to
 						// need to know highest modularity
-						modNodeValue = getModularity(nodeICluster, get<0>(iNeighbors[j]), cluster); // might go to 10
+						modNodeValue = getModularity(nodeICluster, get<0>(iNeighbors[j]), clusters); // might go to 10
+						//cout << "getMod called value :" << modNodeValue << endl;
 						// need to know what node is responsable for it
 						highestModNode = i;
 						// need to know what cluster the node is being added to
@@ -257,16 +278,16 @@ namespace HippoClusterLibrary
 				if (modNodeValue > 0)
 					clusters[i] = highestModCluster;
 				else
-					clusters[i] = nodeICluster;
+					clusters[i] = i;
 				//if(postClusterGraph->numVertices() == preClusterGraph->numVertices())
 				//	for (int i = 0; i < postClusterGraph->numVertices(); i++)
 				//	{
 				//		if (postClusterGraph->getVertexName(i) != preClusterGraph->getVertexName(i))
 				//			flag = false; break;
 				//	}
-				flag = false;
+				if(preClusterGraph->numVertices() == postClusterGraph->numVertices())
+					flag = false;
 			}
-			//cout << "ca 4" << endl;
 			// ******* phase 2 *******
 			// step 3 agrigate graph. loop back to beginning if graph is not same as preClusterGraph
 			// AdjacencyList aggrigateGraph(AdjacencyList* graph, vector<int> clusters)
@@ -276,7 +297,6 @@ namespace HippoClusterLibrary
 			// have to check the list fed into aggregateGraph with the preClusterGraph
 			// 
 			aggregateGraph(postClusterGraph, clusters);
-			//cout << "ca 5" << endl;
 		}
 
 	}
