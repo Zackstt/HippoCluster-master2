@@ -32,8 +32,8 @@ namespace HippoClusterLibrary
 	private:
 		std::vector<int> cluster;
 		AdjacencyList* adjList;
-		AdjacencyList* preClustgerGraph;
-		AdjacencyList* postClusterGraph;
+		AdjacencyList* clusteredGraph;
+		//AdjacencyList* postClusterGraph;
 		double K_constant;
 
 		// cluster contains <nodeID, clusterID> nodeID is the id of the node, clusterID is the cluster its assigned
@@ -42,9 +42,6 @@ namespace HippoClusterLibrary
 		// use a vector. the ID is the number of the cluster, the set contains info on the nodes it contains and 
 		// the weights. might even be easier with a AdjacencyList structure
 		// ***
-		// multiset<string, int> cluster;
-
-		// clusterOfNodes cluster;
 
 	public:
 

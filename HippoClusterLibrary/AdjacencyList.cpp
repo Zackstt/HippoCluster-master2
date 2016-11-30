@@ -42,6 +42,7 @@ namespace HippoClusterLibrary
 		int edges, verticies;
 		std::string tmp1, tmp2;
 
+		int count = 0; 
 		// read in data from file
 		if (inFile.is_open())
 		{
@@ -50,50 +51,16 @@ namespace HippoClusterLibrary
 			inFile >> tmp1;
 			for (int i = 0; i < edges; i++)
 			{
+				if(count%1000==0)
+					std::cout << count << std::endl;
+				count++;
 				inFile >> tmp1;
 				inFile >> tmp2;
 				addEdge(tmp1, tmp2, 1, false);
-
-				//std::cout << tmp1 << ' ' << tmp2 << std::endl;
 			}
 		}
 		else
 			throw("error opening file");
-		//	std::string line;
-		//	while (getline(inFile, line))
-		//	{
-		//		// get the first two string values from the line
-		//		std::vector<std::string> neighbors;
-		//		int pos;
-		//		while ((pos = line.find('\t')) != std::string::npos)
-		//		{
-		//			neighbors.push_back(line.substr(0, pos));
-		//			line.erase(0, pos + 1);
-		//		}
-		//		// get the last numerical value
-		//		double frequency;
-
-		//		// if this text file doesn't include weights
-		//		if (neighbors.size() == 1)
-		//		{
-		//			neighbors.push_back(line);
-		//			frequency = 1;
-		//		}
-		//		else
-		//			frequency = stod(line);
-
-		//		addEdge(neighbors[0], neighbors[1], frequency, false);
-		//	}
-		//	inFile.close();
-		//}
-
-
-		//// calculate edge probabilities
-		//for (int i = 0; i < adjList.size(); i++)
-		//{
-		//	calculateNeighborProbabilities(i);
-		//}
-
 	}
 
 	// ____fromTSV____

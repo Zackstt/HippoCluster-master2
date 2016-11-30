@@ -15,13 +15,12 @@ int main()
 	// read in the test graph
 	AdjacencyList adjacencyList;
 	adjacencyList.fromTSV("testGraph.tsv");
-	cout << 1 << endl;
 	// read in the .graph
 	AdjacencyList adjacencyList1;
-	adjacencyList1.fromGRAPH("karate.graph");
-	RandLouvain karateTest(&adjacencyList1, 0.75);
-	karateTest.clusterAlgorithm();
-	cout << "karate cluster graph :" << endl;
+	adjacencyList1.fromGRAPH("PGPgiantcompo.graph");
+	RandLouvain test1(&adjacencyList1, 0.25);
+	test1.clusterAlgorithm();
+	cout << "PGPgiantcompo cluster graph :" << endl;
 	cout << "vertex name	id" << endl;
 	for (int i = 0; i < adjacencyList1.numVertices(); i++)
 	{
@@ -87,7 +86,7 @@ int main()
 	RandLouvain randL(&adjacencyList2, 0.75);
 	randL.clusterAlgorithm();
 
-	cout << "adjacencyList2:" << endl;
+	cout << "adjacencyList2 after cluster:" << endl;
 	cout << "vertex name	    id" << endl;
 	for (int i = 0; i < adjacencyList2.numVertices(); i++)
 	{
@@ -130,50 +129,16 @@ int main()
 
 	rl.clusterAlgorithm();
 
-	vector<int> clusterlist;
-	cout << "point 1" << endl;
-	clusterlist.resize(10);
-	clusterlist[0]=0;
-	clusterlist[1]=0;
-	clusterlist[2]=0;
-	clusterlist[3]=1;
-	clusterlist[4]=1;
-	clusterlist[5]=1;
-	clusterlist[6]=2;
-	clusterlist[7]=2;
-	clusterlist[8]=2;
-	clusterlist[9]=2;
+	for (int i = 0; i < adjacencyList.numVertices(); i++)
+	{
+		cout << adjacencyList.getVertexName(i) << "\t" << i << endl;
+	}
+	
 
 	AdjacencyList* ranLouv = new AdjacencyList;
 	
-	//rl.clusterAlgorithm();
 
-	
 
-	rl.aggregateGraph(&adjacencyList, clusterlist);
-
-	cout << "adjacencyList size :" << adjacencyList.numVertices() << endl;
-	
-	for (int i = 0; i < adjacencyList.numVertices(); i++)
-	{
-		cout << adjacencyList.getVertexName(i) << "     " << i << endl;
-	}
-
-	//rl.aggregateGraph(&adjacencyList, clusterlist);
-
-	cout << "ranLouv elements :" << endl;
-
-	
-
-	cout << "point 2" << endl;
-
-	//rl.clusterAlgorithm(&adjacencyList);
-	cout << "point 3" << endl;
-	// double getModularity(int nodeI, int comunity, std::vector<int> cluster)
-	//cout << "get modularity returns: " << rl.getModularity(2, 0, clusterlist) << endl;
-
-	cout << "point 4" << endl;
-	// run a clustering algorithm on the full graph
 	
 
 	cout << "*******end of randLouvain" << endl << endl;
